@@ -1,0 +1,357 @@
+@import "tailwindcss";
+
+:root {
+    --background: #f4f7fb;
+    --foreground: #172033;
+
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --primary-light: #eff6ff;
+
+    --card-background: #ffffff;
+    --border: #dbe3ef;
+
+    --muted: #64748b;
+    --footer-background: #172033;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+
+    font-family: var(--font-geist-sans), Arial, sans-serif;
+    font-weight: 500;
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header {
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+}
+
+nav {
+    width: min(1200px, 92%);
+    min-height: 72px;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+nav > a {
+    color: var(--foreground);
+    text-decoration: none;
+
+    font-size: 1.15rem;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+nav > a:hover {
+    color: var(--primary);
+}
+
+nav ul {
+    list-style: none;
+
+    display: flex;
+    align-items: center;
+
+    gap: 28px;
+
+    margin: 0;
+    padding: 0;
+}
+
+nav li {
+    margin: 0;
+    padding: 0;
+}
+
+nav li a {
+    color: var(--muted);
+
+    text-decoration: none;
+
+    font-size: 0.95rem;
+    font-weight: 500;
+
+    transition:
+            color 0.2s ease,
+            transform 0.2s ease;
+}
+
+nav li a:hover {
+    color: var(--primary);
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero {
+    width: 100%;
+    padding: 80px 0;
+}
+
+.container {
+    width: min(1100px, 92%);
+    margin: 0 auto;
+
+    text-align: center;
+}
+
+/* =========================
+   TÍTULO PRINCIPAL
+========================= */
+
+.container > h2 {
+    margin: 0;
+
+    color: var(--foreground);
+
+    font-size: clamp(2.3rem, 4vw, 3.2rem);
+    line-height: 1.1;
+
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.container > p {
+    max-width: 600px;
+
+    margin: 20px auto 0;
+
+    color: var(--muted);
+
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* =========================
+   ACTION CARDS
+========================= */
+
+.actions {
+    margin-top: 50px;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 30px;
+
+    text-align: left;
+}
+
+.action-card {
+    background: var(--card-background);
+
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    padding: 38px 40px;
+
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+
+    display: flex;
+    flex-direction: column;
+
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+
+    border-color: #bfdbfe;
+
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.1);
+}
+
+/* =========================
+   CARD HEADER
+========================= */
+
+.action-card-header {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+.action-icon {
+    flex-shrink: 0;
+
+    color: var(--foreground);
+}
+
+.action-card h2 {
+    margin: 0;
+
+    color: var(--foreground);
+
+    font-size: 1.5rem;
+    line-height: 1.2;
+
+    font-weight: 750;
+    letter-spacing: -0.025em;
+}
+
+/* =========================
+   CARD DESCRIPTION
+========================= */
+
+.action-card p {
+    margin: 0 0 32px;
+
+    color: var(--muted);
+
+    font-size: 1rem;
+    font-weight: 500;
+
+    line-height: 1.7;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    margin-top: auto;
+
+    padding: 15px 20px;
+
+    border-radius: 10px;
+
+    background: #111827;
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 1rem;
+    font-weight: 650;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.action-button:hover {
+    background: #000000;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    width: 100%;
+
+    padding: 22px;
+
+    background: var(--footer-background);
+    color: #cbd5e1;
+
+    text-align: center;
+
+    font-size: 0.9rem;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+    nav {
+        flex-direction: column;
+        justify-content: center;
+
+        padding: 18px 0;
+
+        gap: 15px;
+    }
+
+    nav ul {
+        gap: 18px;
+
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero {
+        padding: 55px 0;
+    }
+
+    .actions {
+        grid-template-columns: 1fr;
+
+        margin-top: 35px;
+    }
+
+    .action-card {
+        padding: 26px;
+    }
+}
+
+@media (max-width: 450px) {
+    nav ul {
+        gap: 12px;
+    }
+
+    nav li a {
+        font-size: 0.9rem;
+    }
+
+    .container > h1 {
+        font-size: 2rem;
+    }
+
+    .container > p {
+        font-size: 0.95rem;
+    }
+}
