@@ -303,6 +303,359 @@ footer {
 }
 
 /* =========================
+   PÁGINA DE EMPRÉSTIMO
+========================= */
+
+.loan-page {
+    width: 100%;
+    padding: 70px 0 80px;
+}
+
+.loan-container {
+    width: min(900px, 92%);
+    margin: 0 auto;
+}
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.loan-header {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.loan-header h1 {
+    margin: 0;
+
+    color: var(--foreground);
+
+    font-size: 3rem;
+    line-height: 1.1;
+
+    font-weight: 800;
+    letter-spacing: -0.04em;
+}
+
+.loan-header p {
+    max-width: 620px;
+
+    margin: 18px auto 0;
+
+    color: var(--muted);
+
+    font-size: 1.1rem;
+    font-weight: 500;
+
+    line-height: 1.6;
+}
+
+/* =========================
+   FORMULÁRIO
+========================= */
+
+.loan-form {
+    background: var(--card-background);
+
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    padding: 40px;
+
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    margin-bottom: 28px;
+}
+
+.form-group label {
+    margin-bottom: 9px;
+
+    color: var(--foreground);
+
+    font-size: 1.5rem;
+    font-weight: 650;
+}
+
+.form-group input {
+    width: 100%;
+
+    padding: 14px 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: var(--foreground);
+
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+
+    outline: none;
+
+    transition:
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.form-group input::placeholder {
+    color: #94a3b8;
+}
+
+.form-group input:focus {
+    border-color: #64748b;
+
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12);
+}
+
+/* =========================
+   NOTEBOOKS
+========================= */
+
+.notebooks-fieldset {
+    margin: 10px 0 0;
+
+    padding: 0;
+
+    border: none;
+}
+
+.notebooks-fieldset legend {
+    padding: 0;
+
+    color: var(--foreground);
+
+    font-size: 1.2rem;
+    font-weight: 750;
+}
+
+.fieldset-description {
+    margin: 7px 0 20px;
+
+    color: var(--muted);
+
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.notebooks-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 14px;
+}
+
+.notebook-card {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 18px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    cursor: pointer;
+
+    transition:
+            border-color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease;
+}
+
+.notebook-card:hover {
+    border-color: #94a3b8;
+
+    transform: translateY(-2px);
+}
+
+.notebook-card:has(input:checked) {
+    border-color: #111827;
+
+    background: #f8fafc;
+}
+
+.notebook-card input {
+    position: absolute;
+
+    top: 16px;
+    right: 16px;
+
+    width: 18px;
+    height: 18px;
+
+    accent-color: #111827;
+
+    cursor: pointer;
+}
+
+.notebook-number {
+    color: var(--foreground);
+
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.notebook-status {
+    margin-top: 7px;
+
+    color: #64748b;
+
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* =========================
+   NOTEBOOK INDISPONÍVEL
+========================= */
+
+.notebook-card.unavailable {
+    background: #f8fafc;
+
+    cursor: not-allowed;
+
+    opacity: 0.55;
+}
+
+.notebook-card.unavailable:hover {
+    border-color: var(--border);
+
+    transform: none;
+}
+
+.notebook-card.unavailable input {
+    cursor: not-allowed;
+}
+
+/* =========================
+   AÇÕES DO FORMULÁRIO
+========================= */
+
+.form-actions {
+    display: flex;
+
+    gap: 14px;
+
+    margin-top: 40px;
+}
+
+.cancel-button,
+.submit-button {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 50px;
+
+    padding: 14px 20px;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    font-size: 1rem;
+    font-weight: 650;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.cancel-button {
+    border: 1px solid var(--border);
+
+    background: #ffffff;
+    color: var(--foreground);
+}
+
+.cancel-button:hover {
+    background: #f8fafc;
+
+    transform: translateY(-1px);
+}
+
+.submit-button {
+    border: none;
+
+    background: #111827;
+    color: #ffffff;
+}
+
+.submit-button:hover {
+    background: #000000;
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18);
+}
+
+.cancel-button:focus-visible,
+.submit-button:focus-visible,
+.notebook-card:has(input:focus-visible) {
+    outline: 3px solid #93c5fd;
+    outline-offset: 3px;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 700px) {
+    .loan-page {
+        padding: 50px 0 60px;
+    }
+
+    .loan-header h1 {
+        font-size: 2.3rem;
+    }
+
+    .loan-form {
+        padding: 28px;
+    }
+
+    .notebooks-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .loan-header h1 {
+        font-size: 2rem;
+    }
+
+    .loan-header p {
+        font-size: 1rem;
+    }
+
+    .loan-form {
+        padding: 22px;
+    }
+
+    .notebooks-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+}
+/* =========================
    RESPONSIVE
 ========================= */
 

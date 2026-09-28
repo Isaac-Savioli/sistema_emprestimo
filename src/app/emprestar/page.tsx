@@ -1,8 +1,9 @@
 import React from 'react'
+import Formulario from "@/components/Formulario";
 
 const Page = () => {
     return (
-        <div>Emprestar</div>
+        <Formulario></Formulario>
     )
 }
 export default Page
