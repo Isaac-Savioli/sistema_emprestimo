@@ -247,8 +247,47 @@ main {
 }
 
 /* =========================
-   BUTTON
+   BUTTONS
 ========================= */
+
+.not-found-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 16px;
+
+    width: fit-content;
+    padding: 14px 28px;
+
+    border-radius: 10px;
+    border: none;
+
+    background: #0c0b0b;
+    color: var(--primary-light);
+
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.not-found-button:hover {
+    background: #1c1b1b;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.not-found-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
 .action-button {
     display: flex;
@@ -263,7 +302,7 @@ main {
 
     border-radius: 10px;
 
-    background: #111827;
+    background: #0c0b0b;
     color: #ffffff;
 
     text-decoration: none;

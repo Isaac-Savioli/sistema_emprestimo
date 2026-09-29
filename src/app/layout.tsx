@@ -14,15 +14,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sistema de Empréstimos",
-  description: "Sistema para gerenciamento de empréstimos de notebooks",
-};
+    title: "Sistema de Empréstimos",
+    description: "Sistema para gerenciamento de empréstimos de notebooks",
+        icons: {
+            icon: "/favicon.svg",
+        },
+}
 
 //navigation links
 const navLinks = [
   {label: "Início", href: "/" },
   {label: "Emprestimos", href: "/emprestimos"},
-  {label: "Emprestar", href: "/emprestar"},
+  {label: "Emprestar", href: "/emprestar-api"},
 ];
 
 export default function RootLayout({ children }: Readonly <{children: React.ReactNode;}>) {
