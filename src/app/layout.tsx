@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 const navLinks = [
   {label: "Início", href: "/" },
   {label: "Emprestimos", href: "/emprestimos"},
-  {label: "Emprestar", href: "/emprestar-api"},
+  {label: "Emprestar", href: "/emprestar"},
 ];
 
 export default function RootLayout({ children }: Readonly <{children: React.ReactNode;}>) {

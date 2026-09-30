@@ -651,6 +651,670 @@ footer {
     outline-offset: 3px;
 }
 
+.form-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 1px solid;
+}
+
+.form-message-error {
+    color: #b91c1c;
+    background: #fef2f2;
+    border-color: #fecaca;
+}
+
+.form-message-success {
+    color: #15803d;
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+}
+
+.form-message-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 24px;
+    height: 24px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.form-message-error .form-message-icon {
+    background: #dc2626;
+}
+
+.form-message-success .form-message-icon {
+    background: #16a34a;
+}
+
+/* =========================
+   POPUPS
+========================= */
+
+.loading-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.loading-spinner {
+    width: 42px;
+    height: 42px;
+
+    border: 4px solid #d1d5db;
+    border-top-color: #1f2937;
+    border-radius: 50%;
+
+    animation: loading-spin 0.8s linear infinite;
+}
+
+.loading-content p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* Overlay do popup */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: rgba(15, 23, 42, 0.45);
+}
+
+/* Caixa do carregamento */
+.loading-modal {
+    width: min(100%, 360px);
+
+    padding: 32px;
+
+    background: var(--card-background);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+}
+
+/* Popup de sucesso */
+.success-modal {
+    width: min(100%, 380px);
+
+    padding: 32px;
+
+    background: var(--card-background);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    text-align: center;
+
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+}
+
+.success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 52px;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #dcfce7;
+    color: #16a34a;
+
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.success-modal h2 {
+    margin: 0 0 8px;
+
+    color: var(--foreground);
+
+    font-size: 1.3rem;
+    font-weight: 750;
+}
+
+.success-modal p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+@keyframes loading-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================
+   EMPRESTIMOS
+========================= */
+
+
+.loans-page {
+    min-height: calc(100vh - 140px);
+    padding: 60px 24px;
+}
+
+.loans-container {
+    width: min(100%, 1100px);
+    margin: 0 auto;
+}
+
+.loans-header {
+    margin-bottom: 35px;
+}
+
+.loans-header h1 {
+    margin: 0 0 8px;
+    font-size: 2.4rem;
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    color: var(--foreground);
+}
+
+.loans-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 1rem;
+}
+
+.loans-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.loan-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+
+    padding: 28px 32px;
+
+    background: var(--card-background);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+}
+
+.loan-card:hover {
+    transform: translateY(-2px);
+    border-color: #bfdbfe;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+}
+
+.loan-card-content {
+    min-width: 0;
+}
+
+.loan-card h2 {
+    margin: 0 0 12px;
+    color: var(--foreground);
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+
+.loan-notebooks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.loan-notebooks span {
+    padding: 6px 10px;
+
+    border-radius: 7px;
+
+    background: #f3f4f6;
+    color: var(--foreground);
+    border: 1px solid #d1d5db;
+
+
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.loan-details-button {
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 250px;
+
+    padding: 13px 20px;
+
+    border-radius: 9px;
+
+    background: #111827;
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 0.95rem;
+    font-weight: 650;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.loan-details-button:hover {
+    background: #000000;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.empty-loans {
+    padding: 60px 30px;
+
+    text-align: center;
+
+    background: var(--card-background);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.empty-loans h2 {
+    margin: 0 0 8px;
+
+    font-size: 1.4rem;
+    color: var(--foreground);
+}
+
+.empty-loans p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.loans-error {
+    padding: 16px 18px;
+
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+
+    background: #fef2f2;
+    color: #b91c1c;
+
+    font-weight: 600;
+}
+
+.loan-card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 8px;
+}
+
+.loan-card-top h2 {
+    margin: 0;
+}
+
+.loan-status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.loan-status.active {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.loan-status.returned {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.loan-date,
+.loan-return-date {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.loan-return-date {
+    margin-top: 4px;
+    color: #166534;
+    font-weight: 600;
+}
+
+.loan-notebooks {
+    margin-top: 14px;
+}
+
+/* ============================
+Página de detalhes do empréstimo (PÁGINA DINÂMICA)
+============================ */
+
+.loan-details-page {
+    min-height: calc(100vh - 140px);
+    padding: 60px 24px;
+    background: #eef0f2;
+}
+
+.loan-details-container {
+    width: min(100%, 900px);
+    margin: 0 auto;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 24px;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 0.95rem;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: color 0.2s ease;
+}
+
+.back-button:hover {
+    color: var(--foreground);
+}
+
+.loan-details-card {
+    background: var(--card-background);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 40px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+}
+
+.loan-details-header {
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+}
+
+.loan-details-header > span {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.loan-details-header h1 {
+    margin: 0;
+    color: var(--foreground);
+    font-size: 2.4rem;
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+}
+
+.loan-details-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.loan-details-info > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.loan-details-info strong {
+    color: var(--foreground);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.loan-details-notebooks {
+    padding-top: 28px;
+}
+
+.loan-details-notebooks h2 {
+    margin: 0 0 18px;
+    color: var(--foreground);
+    font-size: 1.25rem;
+    font-weight: 750;
+}
+
+.notebooks-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.notebook-detail-card {
+    padding: 16px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+
+    background: #f3f4f6;
+    color: var(--foreground);
+
+    text-align: center;
+
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.loan-details-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: 30px;
+    padding-top: 25px;
+
+    border-top: 1px solid var(--border);
+}
+
+.devolver-button {
+    min-width: 250px;
+
+    padding: 13px 24px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #1f2937;
+    color: #ffffff;
+
+    font-size: 0.95rem;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+}
+
+.devolver-button:hover {
+    background: #111827;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(15, 23, 42, 0.15);
+}
+
+.devolver-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+
+/* =========================
+   POPUP
+========================= */
+
+.confirmation-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px;
+
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.confirmation-modal {
+    width: min(100%, 440px);
+
+    padding: 30px;
+
+    background: var(--card-background);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.2);
+}
+
+.confirmation-modal h2 {
+    margin: 0 0 10px;
+
+    color: var(--foreground);
+
+    font-size: 1.35rem;
+    font-weight: 750;
+}
+
+.confirmation-modal p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.confirmation-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    margin-top: 28px;
+}
+
+.confirmation-cancel,
+.confirmation-confirm {
+    padding: 11px 18px;
+
+    border-radius: 9px;
+
+    font-size: 0.9rem;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+}
+
+.confirmation-cancel {
+    border: 1px solid var(--border);
+    background: #ffffff;
+    color: var(--foreground);
+}
+
+.confirmation-cancel:hover {
+    background: #f3f4f6;
+}
+
+.confirmation-confirm {
+    border: 1px solid #1f2937;
+    background: #1f2937;
+    color: #ffffff;
+}
+
+.confirmation-confirm:hover {
+    background: #111827;
+    transform: translateY(-1px);
+}
+
+.confirmation-cancel:disabled,
+.confirmation-confirm:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
 /* =========================
    RESPONSIVO
 ========================= */

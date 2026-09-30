@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Loading from "@/components/Loading";
 
 type Notebook = {
     id: number;
@@ -10,11 +12,17 @@ type Notebook = {
 };
 
 const Formulario = () => {
+    const router = useRouter();
+
     const [notebooks, setNotebooks] = useState<Notebook[]>([]);
     const [professor, setProfessor] = useState("");
     const [data, setData] = useState("");
     const [notebooksSelecionados, setNotebooksSelecionados] = useState<number[]>([]);
-    const [erro, setErro] = useState("");
+    const [mensagem, setMensagem] = useState("");
+    const [tipoMensagem, setTipoMensagem] = useState<"erro" | "sucesso" | "">("");
+    const [registrando, setRegistrando] = useState(false);
+    const [sucesso, setSucesso] = useState(false);
+
 
     useEffect(() => {
         async function buscarNotebooks() {
@@ -30,7 +38,8 @@ const Formulario = () => {
                 setNotebooks(dados);
             } catch (error) {
                 console.error("Erro ao buscar notebooks:", error);
-                setErro("Não foi possível carregar os notebooks.");
+                setMensagem("Não foi possível carregar os notebooks.");
+                setTipoMensagem("erro");
             }
         }
 
@@ -38,7 +47,8 @@ const Formulario = () => {
     }, []);
 
     function selecionarNotebook(id: number) {
-        setErro("");
+        setMensagem("");
+        setTipoMensagem("");
 
         setNotebooksSelecionados((anteriores) => {
             if (anteriores.includes(id)) {
@@ -115,17 +125,21 @@ const Formulario = () => {
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        setErro("");
+        setMensagem("");
+        setTipoMensagem("");
 
         const erroValidacao = validarFormulario();
 
         if (erroValidacao) {
-            setErro(erroValidacao);
+            setMensagem(erroValidacao);
+            setTipoMensagem("erro");
             return;
         }
 
+        setRegistrando(true);
+
         try {
-            const response = await fetch("/api/emprestimos", {
+            const response = await fetch("/api/emprestar", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -140,25 +154,29 @@ const Formulario = () => {
             const resultado = await response.json();
 
             if (!response.ok) {
-                setErro(
-                    resultado.erro ||
-                    "Não foi possível registrar o empréstimo."
+                setMensagem(
+                    resultado.erro || "Não foi possível registrar o empréstimo."
                 );
-
+                setTipoMensagem("erro");
                 return;
             }
 
-            console.log("Empréstimo registrado:", resultado);
+            setRegistrando(false);
+            setSucesso(true);
+
+            setTimeout(() => {
+                router.push("/emprestimos");
+            }, 3000);
 
         } catch (error) {
             console.error("Erro ao registrar empréstimo:", error);
 
-            setErro(
-                "Não foi possível conectar ao servidor."
-            );
+            setMensagem("Não foi possível conectar ao servidor.");
+            setTipoMensagem("erro");
+        } finally {
+            setRegistrando(false);
         }
     }
-
     return (
         <main className="loan-page">
             <section
@@ -182,14 +200,14 @@ const Formulario = () => {
                 >
                     <div className="form-group">
                         <label htmlFor="professor">
-                            Nome do professor
+                            Nome do Professor
                         </label>
 
                         <input
                             type="text"
                             id="professor"
                             name="professor"
-                            placeholder="Digite o nome do professor"
+                            placeholder="Digite o nome do Professor"
                             value={professor}
                             onChange={(event) =>
                                 setProfessor(event.target.value)
@@ -259,10 +277,21 @@ const Formulario = () => {
                         </div>
                     </fieldset>
 
-                    {erro && (
-                        <p className="form-error" role="alert">
-                            {erro}
-                        </p>
+                    {mensagem && (
+                        <div
+                            className={`form-message ${
+                                tipoMensagem === "erro"
+                                    ? "form-message-error"
+                                    : "form-message-success"
+                            }`}
+                            role="alert"
+                        >
+        <span className="form-message-icon">
+            {tipoMensagem === "erro" ? "!" : "✓"}
+        </span>
+
+                            <span>{mensagem}</span>
+                        </div>
                     )}
 
                     <div className="form-actions">
@@ -282,6 +311,30 @@ const Formulario = () => {
                     </div>
                 </form>
             </section>
+
+            {registrando && (
+                <div className="loading-overlay">
+                    <div className="loading-modal">
+                        <Loading mensagem="Registrando empréstimo..." />
+                    </div>
+                </div>
+            )}
+
+            {sucesso && (
+                <div className="loading-overlay">
+                    <div className="success-modal">
+                        <div className="success-icon">
+                            ✓
+                        </div>
+
+                        <h2>Empréstimo registrado!</h2>
+
+                        <p>
+                            Redirecionando para página de empréstimos ativos.
+                        </p>
+                    </div>
+                </div>
+            )}
         </main>
     );
 };

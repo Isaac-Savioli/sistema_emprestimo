@@ -9,18 +9,14 @@ export async function POST(request: Request) {
 
         if (!professor || !data || !Array.isArray(notebooks)) {
             return NextResponse.json(
-                {
-                    erro: "Dados do empréstimo inválidos.",
-                },
+                { erro: "Dados do empréstimo inválidos." },
                 { status: 400 }
             );
         }
 
         if (notebooks.length === 0) {
             return NextResponse.json(
-                {
-                    erro: "Selecione pelo menos um notebook.",
-                },
+                { erro: "Selecione pelo menos um notebook." },
                 { status: 400 }
             );
         }
@@ -32,10 +28,10 @@ export async function POST(request: Request) {
 
             const emprestimoResult = await client.query(
                 `
-        INSERT INTO emprestimos (professor, data_emprestimo)
-        VALUES ($1, $2)
-        RETURNING id
-        `,
+                    INSERT INTO emprestimos (professor, data_emprestimo)
+                    VALUES ($1, $2)
+                        RETURNING id
+                `,
                 [professor, data]
             );
 
@@ -44,11 +40,11 @@ export async function POST(request: Request) {
             for (const notebookId of notebooks) {
                 await client.query(
                     `
-          INSERT INTO emprestimo_notebooks
-            (emprestimo_id, notebook_id)
-          VALUES
-            ($1, $2)
-          `,
+                        INSERT INTO emprestimo_notebooks
+                            (emprestimo_id, notebook_id)
+                        VALUES
+                            ($1, $2)
+                    `,
                     [emprestimoId, notebookId]
                 );
             }
