@@ -956,6 +956,45 @@ footer {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
 
+.loans-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.export-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 11px 18px;
+
+    border: none;
+    border-radius: 9px;
+
+    background: #1f2937;
+    color: #ffffff;
+
+    font-size: 0.9rem;
+    font-weight: 650;
+
+    cursor: pointer;
+
+    transition:
+            background 0.2s ease,
+            transform 0.2s ease;
+}
+
+.export-button:hover {
+    background: #111827;
+}
+
+.export-button:active {
+    transform: translateY(1px);
+}
+
 .empty-loans {
     padding: 60px 30px;
 

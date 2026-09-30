@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Download  } from "lucide-react";
 import Loading from "@/components/Loading";
 
 type Notebook = {
@@ -36,6 +36,10 @@ function formatarDataHora(data: string) {
 }
 
 export default function GerenciamentoInterno() {
+
+    function exportarPlanilha() {
+        window.location.href = "/api/historico/exportar";
+    }
 
     const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
     const [carregando, setCarregando] = useState(true);
@@ -103,16 +107,24 @@ export default function GerenciamentoInterno() {
             <section className="loans-container">
 
                 <div className="loans-header">
+                    <div>
+                        <h1>Histórico de empréstimos</h1>
 
-                    <h1>Histórico de empréstimos</h1>
+                        <p>
+                            Consulte todos os empréstimos registrados
+                            no sistema.
+                        </p>
+                    </div>
 
-                    <p>
-                        Consulte todos os empréstimos registrados
-                        no sistema.
-                    </p>
-
+                    <button
+                        type="button"
+                        className="export-button"
+                        onClick={exportarPlanilha}
+                    >
+                        <Download size={18} />
+                        Exportar planilha
+                    </button>
                 </div>
-
                 {emprestimos.length === 0 ? (
 
                     <div className="empty-loans">
