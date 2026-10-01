@@ -16,13 +16,22 @@ const Formulario = () => {
 
     const [notebooks, setNotebooks] = useState<Notebook[]>([]);
     const [professor, setProfessor] = useState("");
-    const [data, setData] = useState("");
+    const [data, setData] = useState(obterDataAtual());
     const [notebooksSelecionados, setNotebooksSelecionados] = useState<number[]>([]);
     const [mensagem, setMensagem] = useState("");
     const [tipoMensagem, setTipoMensagem] = useState<"erro" | "sucesso" | "">("");
     const [registrando, setRegistrando] = useState(false);
     const [sucesso, setSucesso] = useState(false);
 
+    function obterDataAtual() {
+        const hoje = new Date();
+
+        const ano = hoje.getFullYear();
+        const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+        const dia = String(hoje.getDate()).padStart(2, "0");
+
+        return `${ano}-${mes}-${dia}`;
+    }
 
     useEffect(() => {
         async function buscarNotebooks() {
@@ -30,7 +39,7 @@ const Formulario = () => {
                 const response = await fetch("/api/notebooks");
 
                 if (!response.ok) {
-                    throw new Error("Erro ao buscar notebooks");
+                    new Error("Erro ao buscar notebooks");
                 }
 
                 const dados = await response.json();
@@ -229,6 +238,7 @@ const Formulario = () => {
                             onChange={(event) =>
                                 setData(event.target.value)
                             }
+                            min={obterDataAtual()}
                             required
                         />
                     </div>
