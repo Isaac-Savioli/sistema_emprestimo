@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Download  } from "lucide-react";
 import Loading from "@/components/Loading";
 
-type Notebook = {
+type Equipamento = {
     id: number;
     numero: string;
 };
@@ -14,9 +14,10 @@ type Emprestimo = {
     id: number;
     professor: string;
     data_emprestimo: string;
+    tipo_emprestimo: "notebook" | "celular";
     devolvido: boolean;
     devolvido_em: string | null;
-    notebooks: Notebook[];
+    equipamentos: Equipamento[];
 };
 
 function formatarData(data: string) {
@@ -191,13 +192,13 @@ export default function GerenciamentoInterno() {
 
                                     <div className="loan-notebooks">
 
-                                        {emprestimo.notebooks.map(
-                                            (notebook) => (
-                                                <span
-                                                    key={notebook.id}
-                                                >
-                                                    Notebook{" "}
-                                                    {notebook.numero}
+                                        {emprestimo.equipamentos.map(
+                                            (equipamento) => (
+                                                <span key={equipamento.id}>
+                                                     {emprestimo.tipo_emprestimo === "notebook"
+                                                        ? "Notebook"
+                                                        : "Celular"}{" "}
+                                                     {equipamento.numero}
                                                 </span>
                                             )
                                         )}
