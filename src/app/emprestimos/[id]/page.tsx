@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import Loading from "@/components/Loading";
 
 
-type Notebook = {
+type Equipamento = {
     id: number;
     numero: string;
 };
@@ -15,7 +15,8 @@ type Emprestimo = {
     id: number;
     professor: string;
     data_emprestimo: string;
-    notebooks: Notebook[];
+    tipo_emprestimo: "notebook" | "celular";
+    equipamentos: Equipamento[];
 };
 
 function formatarData(data: string) {
@@ -104,8 +105,8 @@ export default function EmprestimoDetalhes() {
             setSucesso(true);
 
             setTimeout(() => {
-                router.push("/emprestimos");
-            }, 2000);
+                router.push("/");
+            }, 3000);
 
         } catch (error) {
             console.error(
@@ -178,25 +179,35 @@ export default function EmprestimoDetalhes() {
 
                         <div>
                             <span className="info-label">
-                                Notebooks
+                                {emprestimo.tipo_emprestimo === "notebook"
+                                    ? "notebook"
+                                    : "celulares"
+                                }
                             </span>
 
                             <strong>
-                                {emprestimo.notebooks.length}
+                                {emprestimo.equipamentos.length}
                             </strong>
                         </div>
                     </div>
 
                     <div className="loan-details-notebooks">
-                        <h2>Notebooks emprestados</h2>
+                        <h2>
+                            {emprestimo.tipo_emprestimo === "notebook"
+                                ? "Notebooks emprestados"
+                                : "Celulares emprestados"}
+                        </h2>
 
                         <div className="notebooks-detail-grid">
-                            {emprestimo.notebooks.map((notebook) => (
+                            {emprestimo.equipamentos.map((equipamento) => (
                                 <div
-                                    key={notebook.id}
+                                    key={equipamento.id}
                                     className="notebook-detail-card"
                                 >
-                                    Notebook {notebook.numero}
+                                    {emprestimo.tipo_emprestimo === "notebook"
+                                        ? "Notebook"
+                                        : "Celular"}{" "}
+                                    {equipamento.numero}
                                 </div>
                             ))}
                         </div>
@@ -273,7 +284,7 @@ export default function EmprestimoDetalhes() {
                         <h2>Devolução registrada!</h2>
 
                         <p>
-                            Retornando para a página de empréstimos.
+                            Retornando para a página inicial.
                         </p>
                     </div>
                 </div>

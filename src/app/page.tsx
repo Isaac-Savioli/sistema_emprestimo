@@ -15,9 +15,9 @@ export default function Inicio() {
             <div className="actions">
               <article className="action-card">
                 <div className="action-card-header">
-                  <HandCoins className="action-icon" size={38} />
+                  <HandCoins className="action-icon" size={40} />
 
-                  <h2>Emprestar notebook</h2>
+                  <h2>Emprestar</h2>
                 </div>
 
                 <p>

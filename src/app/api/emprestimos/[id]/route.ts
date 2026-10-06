@@ -13,47 +13,68 @@ export async function GET(request: Request, { params }: Params) {
 
         const result = await db.query(
             `
-            SELECT
-                e.id,
-                e.professor,
-                e.data_emprestimo,
-                n.id AS notebook_id,
-                n.numero AS notebook,
-                en.devolvido_em
-            FROM emprestimos e
-            JOIN emprestimo_notebooks en
-                ON e.id = en.emprestimo_id
-            JOIN notebooks n
-                ON n.id = en.notebook_id
-            WHERE e.id = $1
-              AND en.devolvido_em IS NULL
-            ORDER BY n.numero;
+                WITH equipamentos AS (
+                    SELECT
+                        en.emprestimo_id,
+                        n.id,
+                        n.numero
+                    FROM emprestimo_notebooks en
+                    JOIN notebooks n
+                        ON n.id = en.notebook_id
+
+                    UNION ALL
+
+                    SELECT
+                        ec.emprestimo_id,
+                        c.id,
+                        c.numero
+                    FROM emprestimo_celulares ec
+                    JOIN celulares c
+                        ON c.id = ec.celular_id
+                )
+
+                SELECT
+                    e.id,
+                    e.professor,
+                    e.data_emprestimo,
+                    e.tipo_emprestimo,
+
+                    JSON_AGG(
+                        JSON_BUILD_OBJECT(
+                            'id', eq.id,
+                            'numero', eq.numero
+                        )
+                        ORDER BY eq.id
+                    ) AS equipamentos
+
+                FROM emprestimos e
+
+                JOIN equipamentos eq
+                    ON eq.emprestimo_id = e.id
+
+                WHERE e.id = $1
+
+                GROUP BY
+                    e.id,
+                    e.professor,
+                    e.data_emprestimo,
+                    e.tipo_emprestimo;
             `,
             [id]
         );
 
-        if (result.rows.length === 0) {
+        if (result.rowCount === 0) {
             return NextResponse.json(
                 {
                     erro: "Empréstimo não encontrado.",
                 },
-                { status: 404 }
+                {
+                    status: 404,
+                }
             );
         }
 
-        const primeiro = result.rows[0];
-
-        const emprestimo = {
-            id: primeiro.id,
-            professor: primeiro.professor,
-            data_emprestimo: primeiro.data_emprestimo,
-            notebooks: result.rows.map((row) => ({
-                id: row.notebook_id,
-                numero: row.notebook,
-            })),
-        };
-
-        return NextResponse.json(emprestimo);
+        return NextResponse.json(result.rows[0]);
 
     } catch (error) {
         console.error(
@@ -65,7 +86,9 @@ export async function GET(request: Request, { params }: Params) {
             {
                 erro: "Não foi possível buscar o empréstimo.",
             },
-            { status: 500 }
+            {
+                status: 500,
+            }
         );
     }
 }
@@ -79,25 +102,67 @@ export async function PATCH(request: Request, { params }: Params) {
         try {
             await client.query("BEGIN");
 
-            const result = await client.query(
+            const emprestimoResult = await client.query(
                 `
-                UPDATE emprestimo_notebooks
-                SET devolvido_em = NOW()
-                WHERE emprestimo_id = $1
-                  AND devolvido_em IS NULL
-                RETURNING id;
+                    SELECT tipo_emprestimo
+                    FROM emprestimos
+                    WHERE id = $1;
                 `,
                 [id]
             );
+
+            if (emprestimoResult.rowCount === 0) {
+                await client.query("ROLLBACK");
+
+                return NextResponse.json(
+                    {
+                        erro: "Este empréstimo não existe.",
+                    },
+                    {
+                        status: 404,
+                    }
+                );
+            }
+
+            const tipoEmprestimo =
+                emprestimoResult.rows[0].tipo_emprestimo;
+
+            let result;
+
+            if (tipoEmprestimo === "notebook") {
+                result = await client.query(
+                    `
+                        UPDATE emprestimo_notebooks
+                        SET devolvido_em = NOW()
+                        WHERE emprestimo_id = $1
+                          AND devolvido_em IS NULL
+                        RETURNING id;
+                    `,
+                    [id]
+                );
+            } else {
+                result = await client.query(
+                    `
+                        UPDATE emprestimo_celulares
+                        SET devolvido_em = NOW()
+                        WHERE emprestimo_id = $1
+                          AND devolvido_em IS NULL
+                        RETURNING id;
+                    `,
+                    [id]
+                );
+            }
 
             if (result.rowCount === 0) {
                 await client.query("ROLLBACK");
 
                 return NextResponse.json(
                     {
-                        erro: "Este empréstimo já foi devolvido ou não existe.",
+                        erro: "Este empréstimo já foi devolvido.",
                     },
-                    { status: 404 }
+                    {
+                        status: 404,
+                    }
                 );
             }
 
@@ -126,7 +191,9 @@ export async function PATCH(request: Request, { params }: Params) {
             {
                 erro: "Não foi possível registrar a devolução.",
             },
-            { status: 500 }
+            {
+                status: 500,
+            }
         );
     }
 }

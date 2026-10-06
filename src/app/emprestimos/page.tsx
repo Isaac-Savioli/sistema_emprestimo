@@ -3,11 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+type Equipamento = {
+    id: number;
+    numero: string;
+};
+
 type Emprestimo = {
     id: number;
     professor: string;
     data_emprestimo: string;
-    notebooks: string[];
+    tipo_emprestimo: "notebook" | "celular";
+    quantidade: number;
+    equipamentos: Equipamento[];
 };
 
 export default function Emprestimos() {
@@ -66,7 +73,7 @@ export default function Emprestimos() {
                 <div className="loans-header">
                     <h1>Empréstimos ativos</h1>
                     <p>
-                        Consulte os notebooks que estão atualmente emprestados.
+                        Consulte os equipamentos que estão atualmente emprestados.
                     </p>
                 </div>
 
@@ -74,7 +81,7 @@ export default function Emprestimos() {
                     <div className="empty-loans">
                         <h2>Nenhum empréstimo ativo</h2>
                         <p>
-                            Não há notebooks emprestados no momento.
+                            Não há equipamentos emprestados no momento.
                         </p>
                     </div>
                 ) : (
@@ -88,9 +95,13 @@ export default function Emprestimos() {
                                     <h2>{emprestimo.professor}</h2>
 
                                     <div className="loan-notebooks">
-                                        {emprestimo.notebooks.map((notebook) => (
-                                            <span key={notebook}>
-                                                Notebook {notebook}
+                                        {emprestimo.equipamentos.map((equipamento) => (
+                                            <span key={equipamento.id}>
+                                                {
+                                                    emprestimo.tipo_emprestimo === "notebook"
+                                                    ? "notebook"
+                                                    : "celular"}{" "}
+                                                {equipamento.numero}
                                             </span>
                                         ))}
                                     </div>

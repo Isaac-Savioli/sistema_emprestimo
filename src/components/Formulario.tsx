@@ -10,6 +10,11 @@ type Notebook = {
     numero: string;
     disponivel: boolean;
 };
+type Celular = {
+    id: number;
+    numero: string;
+    disponivel: boolean;
+}
 
 const Formulario = () => {
     const router = useRouter();
@@ -17,11 +22,13 @@ const Formulario = () => {
     const [notebooks, setNotebooks] = useState<Notebook[]>([]);
     const [professor, setProfessor] = useState("");
     const [data, setData] = useState(obterDataAtual());
-    const [notebooksSelecionados, setNotebooksSelecionados] = useState<number[]>([]);
+    const [equipamentosSelecionados, setEquipamentosSelecionados] = useState<number[]>([]);
     const [mensagem, setMensagem] = useState("");
     const [tipoMensagem, setTipoMensagem] = useState<"erro" | "sucesso" | "">("");
     const [registrando, setRegistrando] = useState(false);
     const [sucesso, setSucesso] = useState(false);
+    const [tipoEmprestimo, setTipoEmprestimo] = useState<"notebook" | "celular">("notebook");
+    const [celulares, setCelulares] = useState<Celular[]>([]);
 
     function obterDataAtual() {
         const hoje = new Date();
@@ -34,35 +41,43 @@ const Formulario = () => {
     }
 
     useEffect(() => {
-        async function buscarNotebooks() {
+        async function buscarEquipamentos() {
             try {
-                const response = await fetch("/api/notebooks");
+                const response = await fetch("/api/equipamentos");
 
                 if (!response.ok) {
-                    new Error("Erro ao buscar notebooks");
+                    throw new Error("Erro ao buscar equipamentos");
                 }
 
                 const dados = await response.json();
 
-                setNotebooks(dados);
+                setNotebooks(dados.notebooks);
+                setCelulares(dados.celulares);
+
             } catch (error) {
-                console.error("Erro ao buscar notebooks:", error);
-                setMensagem("Não foi possível carregar os notebooks.");
+                console.error(
+                    "Erro ao buscar equipamentos:",
+                    error
+                );
+
+                setMensagem(
+                    "Não foi possível carregar os equipamentos."
+                );
+
                 setTipoMensagem("erro");
             }
         }
 
-        buscarNotebooks();
+        buscarEquipamentos();
     }, []);
-
-    function selecionarNotebook(id: number) {
+    function selecionarEquipamento(id: number) {
         setMensagem("");
         setTipoMensagem("");
 
-        setNotebooksSelecionados((anteriores) => {
+        setEquipamentosSelecionados((anteriores) => {
             if (anteriores.includes(id)) {
                 return anteriores.filter(
-                    (notebookId) => notebookId !== id
+                    (equipamentoId) => equipamentoId !== id
                 );
             }
 
@@ -110,25 +125,36 @@ const Formulario = () => {
             return "A data do empréstimo não pode ser anterior a hoje.";
         }
 
-        // Pelo menos um notebook
-        if (notebooksSelecionados.length === 0) {
-            return "Selecione pelo menos um notebook.";
+        // Pelo menos um equipamento
+        if (equipamentosSelecionados.length === 0) {
+            return `Selecione pelo menos um ${
+                tipoEmprestimo === "notebook"
+                    ? "notebook"
+                    : "celular"
+            }.`;
         }
 
-        // Confirma que todos os selecionados continuam disponíveis
-        const algumIndisponivel = notebooksSelecionados.some((id) => {
-            const notebook = notebooks.find(
-                (notebook) => notebook.id === id
+// Confirma que todos os selecionados continuam disponíveis
+        const equipamentos =
+            tipoEmprestimo === "notebook"
+                ? notebooks
+                : celulares;
+
+        const algumIndisponivel = equipamentosSelecionados.some((id) => {
+            const equipamento = equipamentos.find(
+                (item) => item.id === id
             );
 
-            return !notebook || !notebook.disponivel;
+            return !equipamento || !equipamento.disponivel;
         });
 
         if (algumIndisponivel) {
-            return "Um dos notebooks selecionados não está disponível.";
+            return `Um dos ${
+                tipoEmprestimo === "notebook"
+                    ? "notebooks"
+                    : "celulares"
+            } selecionados não está disponível.`;
         }
-
-        return "";
     }
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -156,7 +182,14 @@ const Formulario = () => {
                 body: JSON.stringify({
                     professor: professor.trim(),
                     data,
-                    notebooks: notebooksSelecionados,
+                    tipo: tipoEmprestimo,
+                    ...(tipoEmprestimo === "notebook")
+                    ? {
+                        notebooks: equipamentosSelecionados,
+                      }
+                    :{
+                        celulares: equipamentosSelecionados,
+                        }
                 }),
             });
 
@@ -174,7 +207,7 @@ const Formulario = () => {
             setSucesso(true);
 
             setTimeout(() => {
-                router.push("/emprestimos");
+                router.push("/");
             }, 3000);
 
         } catch (error) {
@@ -243,50 +276,145 @@ const Formulario = () => {
                         />
                     </div>
 
+                    <div className="form-group">
+
+                        <label>
+                            Tipo de empréstimo
+                        </label>
+
+                        <div className="loan-type-options">
+
+                            <button
+                                type="button"
+                                className={`loan-type-button ${
+                                    tipoEmprestimo === "notebook"
+                                        ? "selected"
+                                        : ""
+                                }`}
+                                onClick={() => {
+                                    setTipoEmprestimo("notebook");
+                                    setEquipamentosSelecionados([]);
+                                }}
+                            >
+                                Notebook
+                            </button>
+
+                            <button
+                                type="button"
+                                className={`loan-type-button ${
+                                    tipoEmprestimo === "celular"
+                                        ? "selected"
+                                        : ""
+                                }`}
+                                onClick={() => {
+                                    setTipoEmprestimo("celular");
+                                    setEquipamentosSelecionados([]);
+                                }}
+                            >
+                                Celular
+                            </button>
+
+                        </div>
+
+                    </div>
+
                     <fieldset className="notebooks-fieldset">
-                        <legend>Notebooks</legend>
+
+                        <legend>
+                            {tipoEmprestimo === "notebook"
+                                ? "Notebooks"
+                                : "Celulares"}
+                        </legend>
 
                         <p className="fieldset-description">
-                            Selecione os notebooks disponíveis para este empréstimo.
+                            {tipoEmprestimo === "notebook"
+                                ? "Selecione os notebooks disponíveis para este empréstimo."
+                                : "Selecione os celulares disponíveis para este empréstimo."}
                         </p>
 
                         <div className="notebooks-grid">
-                            {notebooks.map((notebook) => (
-                                <label
-                                    key={notebook.id}
-                                    className={`notebook-card ${
-                                        !notebook.disponivel
-                                            ? "unavailable"
-                                            : ""
-                                    }`}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        name="notebooks"
-                                        value={notebook.id}
-                                        checked={notebooksSelecionados.includes(
-                                            notebook.id
-                                        )}
-                                        disabled={!notebook.disponivel}
-                                        onChange={() =>
-                                            selecionarNotebook(notebook.id)
-                                        }
-                                    />
 
-                                    <span className="notebook-number">
-                                        Notebook {notebook.numero}
-                                    </span>
+                            {tipoEmprestimo === "notebook"
 
-                                    <span className="notebook-status">
-                                        {notebook.disponivel
-                                            ? "Disponível"
-                                            : "Emprestado"}
-                                    </span>
-                                </label>
-                            ))}
+                                ? notebooks.map((notebook) => (
+
+                                    <label
+                                        key={notebook.id}
+                                        className={`notebook-card ${
+                                            !notebook.disponivel
+                                                ? "unavailable"
+                                                : ""
+                                        }`}
+                                    >
+
+                                        <input
+                                            type="checkbox"
+                                            name="equipamentos"
+                                            value={notebook.id}
+                                            checked={equipamentosSelecionados.includes(
+                                                notebook.id
+                                            )}
+                                            disabled={!notebook.disponivel}
+                                            onChange={() =>
+                                                selecionarEquipamento(notebook.id)
+                                            }
+                                        />
+
+                                        <span className="notebook-number">
+                        Notebook {notebook.numero}
+                    </span>
+
+                                        <span className="notebook-status">
+                        {notebook.disponivel
+                            ? "Disponível"
+                            : "Emprestado"}
+                    </span>
+
+                                    </label>
+
+                                ))
+
+                                : celulares.map((celular) => (
+
+                                    <label
+                                        key={celular.id}
+                                        className={`notebook-card ${
+                                            !celular.disponivel
+                                                ? "unavailable"
+                                                : ""
+                                        }`}
+                                    >
+
+                                        <input
+                                            type="checkbox"
+                                            name="equipamentos"
+                                            value={celular.id}
+                                            checked={equipamentosSelecionados.includes(
+                                                celular.id
+                                            )}
+                                            disabled={!celular.disponivel}
+                                            onChange={() =>
+                                                selecionarEquipamento(celular.id)
+                                            }
+                                        />
+
+                                        <span className="notebook-number">
+                        Celular {celular.numero}
+                    </span>
+
+                                        <span className="notebook-status">
+                        {celular.disponivel
+                            ? "Disponível"
+                            : "Emprestado"}
+                    </span>
+
+                                    </label>
+
+                                ))}
+
                         </div>
-                    </fieldset>
 
+                    </fieldset>
                     {mensagem && (
                         <div
                             className={`form-message ${
@@ -340,7 +468,7 @@ const Formulario = () => {
                         <h2>Empréstimo registrado!</h2>
 
                         <p>
-                            Redirecionando para página de empréstimos ativos.
+                            Redirecionando para a página inicial.
                         </p>
                     </div>
                 </div>
