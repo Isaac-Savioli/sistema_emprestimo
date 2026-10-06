@@ -17,30 +17,65 @@ function formatarDataHora(data: string | Date) {
 export async function GET() {
     try {
         const result = await db.query(`
+            WITH equipamentos AS (
+                SELECT
+                    en.emprestimo_id,
+                    n.id AS equipamento_id,
+                    n.numero,
+                    'notebook' AS tipo,
+                    en.devolvido_em
+                FROM emprestimo_notebooks en
+
+                         JOIN notebooks n
+                              ON n.id = en.notebook_id
+
+                UNION ALL
+
+                SELECT
+                    ec.emprestimo_id,
+                    c.id AS equipamento_id,
+                    c.numero,
+                    'celular' AS tipo,
+                    ec.devolvido_em
+                FROM emprestimo_celulares ec
+
+                         JOIN celulares c
+                              ON c.id = ec.celular_id
+            )
+
             SELECT
                 e.id AS emprestimo_id,
                 e.professor,
                 e.data_emprestimo,
-                n.numero AS notebook,
+                eq.tipo,
+                eq.numero AS equipamento,
                 CASE
-                    WHEN en.devolvido_em IS NULL
+                    WHEN eq.devolvido_em IS NULL
                         THEN 'Em andamento'
                     ELSE 'Devolvido'
                     END AS status,
-                en.devolvido_em
+                eq.devolvido_em
+
             FROM emprestimos e
-                     JOIN emprestimo_notebooks en
-                          ON e.id = en.emprestimo_id
-                     JOIN notebooks n
-                          ON n.id = en.notebook_id
-            ORDER BY e.id DESC, n.id;
+
+                     JOIN equipamentos eq
+                          ON e.id = eq.emprestimo_id
+
+            ORDER BY
+                e.id DESC,
+                eq.equipamento_id;
         `);
 
         const dados = result.rows.map((item) => ({
             "ID Empréstimo": item.emprestimo_id,
             "Professor": item.professor,
-            "Data do empréstimo": formatarData(item.data_emprestimo),
-            "Notebook": item.notebook,
+            "Data do empréstimo": formatarData(
+                item.data_emprestimo
+            ),
+            "Tipo": item.tipo === "notebook"
+                ? "Notebook"
+                : "Celular",
+            "Equipamento": item.equipamento,
             "Status": item.status,
             "Data da devolução": item.devolvido_em
                 ? formatarDataHora(item.devolvido_em)
@@ -54,6 +89,7 @@ export async function GET() {
             { wch: 25 },
             { wch: 22 },
             { wch: 12 },
+            { wch: 15 },
             { wch: 18 },
             { wch: 22 },
         ];
