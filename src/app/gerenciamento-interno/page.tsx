@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Download  } from "lucide-react";
+import { ArrowRight, Download, Trash2  } from "lucide-react";
 import Loading from "@/components/Loading";
 
 type Equipamento = {
@@ -45,6 +45,11 @@ export default function GerenciamentoInterno() {
     const [emprestimos, setEmprestimos] = useState<Emprestimo[]>([]);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState("");
+    const [emprestimoSelecionado, setEmprestimoSelecionado] = useState<Emprestimo | null>(null);
+    const [etapaExclusao, setEtapaExclusao] = useState<"confirmacao" | "detalhes" | "senha" | "sucesso" | null>(null);
+    const [senha, setSenha] = useState("");
+    const [excluindo, setExcluindo] = useState(false);
+    const [erroExclusao, setErroExclusao] = useState("");
 
     useEffect(() => {
         async function buscarHistorico() {
@@ -102,6 +107,71 @@ export default function GerenciamentoInterno() {
         );
     }
 
+    function iniciarExclusao(emprestimo: Emprestimo) {
+        setEmprestimoSelecionado(emprestimo);
+        setEtapaExclusao("confirmacao");
+        setSenha("");
+        setErroExclusao("");
+    }
+
+    async function excluirEmprestimo() {
+        if (!emprestimoSelecionado || !senha) {
+            return;
+        }
+
+        setExcluindo(true);
+        setErroExclusao("");
+
+        try {
+            const response = await fetch(
+                `/api/historico/${emprestimoSelecionado.id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        senha,
+                    }),
+                }
+            );
+
+            const dados = await response.json();
+
+            if (!response.ok) {
+                setErroExclusao(
+                    dados.erro ||
+                    "Não foi possível excluir o empréstimo."
+                );
+
+                return;
+            }
+
+            setEmprestimos((anteriores) =>
+                anteriores.filter(
+                    (emprestimo) =>
+                        emprestimo.id !== emprestimoSelecionado.id
+                )
+            );
+
+            setEtapaExclusao("sucesso");
+            setEmprestimoSelecionado(null);
+            setSenha("");
+
+        } catch (error) {
+            console.error(
+                "ERRO AO EXCLUIR EMPRÉSTIMO:",
+                error
+            );
+
+            setErroExclusao(
+                "Não foi possível conectar ao servidor."
+            );
+
+        } finally {
+            setExcluindo(false);
+        }
+    }
     return (
         <main className="loans-page">
 
@@ -207,13 +277,23 @@ export default function GerenciamentoInterno() {
 
                                 </div>
 
-                                <Link
-                                    href={`/emprestimos/${emprestimo.id}`}
-                                    className="loan-details-button"
-                                >
-                                    Ver detalhes
-                                    <ArrowRight size={18} />
-                                </Link>
+                                <div className="loan-actions">
+                                    <Link href={`/emprestimos/${emprestimo.id}`}
+                                          className="loan-details-button"
+                                    >
+                                        Ver detalhes
+                                        <ArrowRight size={18} />
+                                    </Link>
+
+                                    <button
+                                        type="button"
+                                        className="delete-loan-button"
+                                        onClick={() => iniciarExclusao(emprestimo)}
+                                    >
+                                        <Trash2 size={18} />
+                                        Excluir
+                                    </button>
+                                </div>
 
                             </article>
 
@@ -224,7 +304,218 @@ export default function GerenciamentoInterno() {
                 )}
 
             </section>
+            {etapaExclusao === "confirmacao" && emprestimoSelecionado && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Excluir empréstimo?</h2>
 
+                        <p>
+                            Tem certeza de que deseja excluir este empréstimo?
+                        </p>
+
+                        <p className="modal-warning">
+                            Essa ação é permanente e não poderá ser desfeita.
+                        </p>
+
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEtapaExclusao(null);
+                                    setEmprestimoSelecionado(null);
+                                }}
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEtapaExclusao("detalhes");
+                                }}
+                            >
+                                Continuar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {etapaExclusao === "detalhes" && emprestimoSelecionado && (
+                <div className="modal-overlay">
+                    <div className="modal-content modal-details">
+                        <h2>Detalhes do empréstimo</h2>
+
+                        <div className="loan-detail-info">
+                            <div>
+                                <span>Professor</span>
+                                <strong>
+                                    {emprestimoSelecionado.professor}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Data do empréstimo</span>
+                                <strong>
+                                    {formatarData(emprestimoSelecionado.data_emprestimo)}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Tipo</span>
+                                <strong>
+                                    {emprestimoSelecionado.tipo_emprestimo ===
+                                    "notebook"
+                                        ? "Notebook"
+                                        : "Celular"}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span>Quantidade</span>
+                                <strong>
+                                    {emprestimoSelecionado.equipamentos.length}
+                                </strong>
+                            </div>
+                        </div>
+
+                        <div className="loan-detail-equipment">
+                            <span>Equipamentos</span>
+
+                            <div className="equipment-list">
+                                {emprestimoSelecionado.equipamentos.map(
+                                    (equipamento) => (
+                                        <div
+                                            key={equipamento.id}
+                                            className="equipment-item"
+                                        >
+                                            {emprestimoSelecionado.tipo_emprestimo ===
+                                            "notebook"
+                                                ? "Notebook"
+                                                : "Celular"}{" "}
+                                            {equipamento.numero}
+                                        </div>
+                                    )
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="modal-warning">
+                            <strong>Atenção:</strong> esta ação é permanente.
+                            O empréstimo e seus registros de equipamentos serão
+                            excluídos definitivamente.
+                        </div>
+
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEtapaExclusao("confirmacao");
+                                }}
+                            >
+                                Voltar
+                            </button>
+
+                            <button
+                                type="button"
+                                className="delete-confirm-button"
+                                onClick={() => {
+                                    setEtapaExclusao("senha");
+                                }}
+                            >
+                                Confirmar exclusão
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {etapaExclusao === "senha" && emprestimoSelecionado && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Confirmar exclusão</h2>
+
+                        <p>
+                            Para excluir este empréstimo, informe a
+                            senha administrativa.
+                        </p>
+
+                        <div className="password-field">
+                            <label htmlFor="senha-exclusao">
+                                Senha
+                            </label>
+
+                            <input
+                                id="senha-exclusao"
+                                type="password"
+                                value={senha}
+                                onChange={(event) => {
+                                    setSenha(event.target.value);
+                                    setErroExclusao("");
+                                }}
+                                placeholder="Digite a senha"
+                                disabled={excluindo}
+                            />
+                        </div>
+
+                        {erroExclusao && (
+                            <p className="delete-error">
+                                {erroExclusao}
+                            </p>
+                        )}
+
+                        <div className="modal-actions">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setEtapaExclusao("detalhes");
+                                    setSenha("");
+                                    setErroExclusao("");
+                                }}
+                                disabled={excluindo}
+                            >
+                                Voltar
+                            </button>
+
+                            <button
+                                type="button"
+                                className="delete-confirm-button"
+                                onClick={excluirEmprestimo}
+                                disabled={excluindo || !senha}
+                            >
+                                {excluindo
+                                    ? "Excluindo..."
+                                    : "Excluir empréstimo"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {etapaExclusao === "sucesso" && (
+                <div className="modal-overlay">
+                    <div className="modal-content modal-success">
+                        <div className="success-icon">
+                            ✓
+                        </div>
+
+                        <h2>Exclusão realizada</h2>
+
+                        <p>
+                            O empréstimo foi excluído com sucesso.
+                        </p>
+
+                            <div
+                                className="leave-confirmation"
+                                onClick={() => {
+                                    setEtapaExclusao(null);
+                                }}
+                            >
+                                OK
+                            </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }
