@@ -208,7 +208,7 @@ const Formulario = () => {
 
             setTimeout(() => {
                 router.push("/");
-            }, 3000);
+            }, 1500);
 
         } catch (error) {
             console.error("Erro ao registrar empréstimo:", error);

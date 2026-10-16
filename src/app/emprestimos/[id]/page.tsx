@@ -106,7 +106,7 @@ export default function EmprestimoDetalhes() {
 
             setTimeout(() => {
                 router.push("/");
-            }, 3000);
+            }, 1500);
 
         } catch (error) {
             console.error(
