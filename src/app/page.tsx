@@ -9,7 +9,7 @@ export default function Inicio() {
             <h2 id="titulo-principal">Sistema de Empréstimos</h2>
 
             <p>
-              O que você deseja fazer?
+              O que você deseja fazer? Escolha uma das opções abaixo para prosseguir.
             </p>
 
             <div className="actions">
