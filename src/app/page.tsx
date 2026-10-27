@@ -6,10 +6,10 @@ export default function Inicio() {
       <main>
         <section className="hero" aria-labelledby="titulo-principal">
           <div className="container">
-            <h2 id="titulo-principal">O que você deseja fazer?</h2>
+            <h2 id="titulo-principal">Sistema de Empréstimos</h2>
 
             <p>
-              Escolha uma das opções abaixo para continuar.
+              O que você deseja fazer?
             </p>
 
             <div className="actions">
@@ -22,7 +22,7 @@ export default function Inicio() {
 
                 <p>
                   Registre um novo empréstimo informando o nome do professor,
-                  a data e os notebooks utilizados.
+                  a data e os dispositivos utilizados.
                 </p>
 
                 <Link href="/emprestar" className="action-button">
@@ -39,7 +39,7 @@ export default function Inicio() {
 
                 <p>
                   Consulte os empréstimos registrados e acompanhe
-                  os notebooks que estão emprestados.
+                  os dispositivos que estão emprestados.
                 </p>
 
                 <Link href="/emprestimos" className="action-button">
