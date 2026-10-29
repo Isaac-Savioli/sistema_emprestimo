@@ -34,16 +34,15 @@ export default function Inicio() {
                 <div className="action-card-header">
                   <ClipboardList className="action-icon" size={38} />
 
-                  <h2>Ver empréstimos</h2>
+                  <h2>Devolver empréstimos</h2>
                 </div>
 
                 <p>
-                  Consulte os empréstimos registrados e acompanhe
-                  os dispositivos que estão emprestados.
+                  Registre a devolução dos dispositivos emprestados e atualize o status dos empréstimos.
                 </p>
 
                 <Link href="/emprestimos" className="action-button">
-                  Ver empréstimos
+                  Devolver empréstimos
                 </Link>
               </article>
             </div>
